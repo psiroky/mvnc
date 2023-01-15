@@ -108,6 +108,43 @@ class MavenCentralCliAppTest {
         assertThat(result.getErrorOutput()).isEmpty();
     }
 
+    @Test
+    void showVersionShortOption(QuarkusMainLauncher launcher) {
+        LaunchResult result = launcher.launch("-V");
+
+        assertThat(result.exitCode()).isZero();
+        assertThat(result.getOutput()).contains("mvnc");
+        assertThat(result.getErrorOutput()).isEmpty();
+    }
+
+    @Test
+    void showVersionLongOption(QuarkusMainLauncher launcher) {
+        LaunchResult result = launcher.launch("--version");
+
+        assertThat(result.exitCode()).isZero();
+        assertThat(result.getOutput()).contains("mvnc");
+        assertThat(result.getErrorOutput()).isEmpty();
+    }
+
+    @Test
+    void showHelpShortOption(QuarkusMainLauncher launcher) {
+        LaunchResult result = launcher.launch("-h");
+
+        assertThat(result.exitCode()).isZero();
+        assertThat(result.getOutput()).contains("Usage: ");
+        assertThat(result.getErrorOutput()).isEmpty();
+    }
+
+    @Test
+    void showHelpLongOption(QuarkusMainLauncher launcher) {
+        LaunchResult result = launcher.launch("--help");
+
+        assertThat(result.exitCode()).isZero();
+        assertThat(result.getOutput()).contains("Usage: ");
+        assertThat(result.getErrorOutput()).isEmpty();
+    }
+
+
     private String loadClassPathResource(String classpath) {
         try (var resourceStream = getClass().getResourceAsStream(classpath)) {
             if (resourceStream == null) {

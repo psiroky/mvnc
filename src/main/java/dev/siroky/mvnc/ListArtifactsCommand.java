@@ -11,10 +11,11 @@ import picocli.CommandLine;
 import javax.enterprise.inject.Default;
 
 @Default
-@CommandLine.Command(name = "mvnc")
+@CommandLine.Command(name = "mvnc", mixinStandardHelpOptions = true, versionProvider = PicocliVersionProvider.class,
+        description = "List Maven artifacts based on groupId and artifactId, and their versions")
 public class ListArtifactsCommand implements Runnable {
 
-    @CommandLine.Parameters(index = "0")
+    @CommandLine.Parameters(index = "0", description = "Maven artifact coordinates, e.g. org.apache.maven:maven-core")
     String artifactCoordinates;
 
     private final MavenCentralRestClient mavenCentralClient;
