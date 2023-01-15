@@ -1,7 +1,7 @@
 package dev.siroky.mvnc.rest;
 
-public record MavenArtifact(
+public record Artifact(
         String g,
         String a,
-        String latestVersion) {
+        String v) {
 }

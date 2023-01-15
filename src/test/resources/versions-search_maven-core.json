@@ -1,0 +1,113 @@
+{
+  "responseHeader": {
+    "status": 0,
+    "QTime": 141,
+    "params": {
+      "q": "g:org.apache.maven AND a:maven",
+      "core": "gav",
+      "indent": "off",
+      "fl": "id,g,a,v,p,ec,timestamp,tags",
+      "start": "",
+      "sort": "score desc,timestamp desc,g asc,a asc,v desc",
+      "rows": "20",
+      "wt": "json",
+      "version": "2.2"
+    }
+  },
+  "response": {
+    "numFound": 67,
+    "start": 0,
+    "docs": [
+      {
+        "id": "org.apache.maven:maven:3.8.7",
+        "g": "org.apache.maven",
+        "a": "maven",
+        "v": "3.8.7",
+        "p": "pom",
+        "timestamp": 1671909496000,
+        "ec": [
+          ".pom",
+          "-site.xml"
+        ],
+        "tags": [
+          "other",
+          "software",
+          "plugins",
+          "concept",
+          "project",
+          "distribution",
+          "tools",
+          "extended",
+          "number",
+          "file",
+          "publication",
+          "builds",
+          "model",
+          "from",
+          "utilise",
+          "declarative",
+          "creation",
+          "reporting",
+          "based",
+          "development",
+          "process",
+          "dependency",
+          "maven",
+          "documentation",
+          "comprehension",
+          "tool",
+          "controlled",
+          "site",
+          "build",
+          "management",
+          "object"
+        ]
+      },
+      {
+        "id": "org.apache.maven:maven:4.0.0-alpha-3",
+        "g": "org.apache.maven",
+        "a": "maven",
+        "v": "4.0.0-alpha-3",
+        "p": "pom",
+        "timestamp": 1670846995000,
+        "ec": [
+          ".pom",
+          "-site.xml"
+        ],
+        "tags": [
+          "other",
+          "software",
+          "plugins",
+          "concept",
+          "project",
+          "distribution",
+          "tools",
+          "extended",
+          "number",
+          "file",
+          "publication",
+          "builds",
+          "model",
+          "from",
+          "utilise",
+          "declarative",
+          "creation",
+          "reporting",
+          "based",
+          "development",
+          "process",
+          "dependency",
+          "maven",
+          "documentation",
+          "comprehension",
+          "tool",
+          "controlled",
+          "site",
+          "build",
+          "management",
+          "object"
+        ]
+      }
+    ]
+  }
+}

@@ -66,7 +66,6 @@ class MavenCentralCliAppTest {
                         .withHeader("Content-Type", "application/json")
                         .withBody(response));
 
-
         LaunchResult result = launcher.launch("non-existing");
 
         assertThat(result.exitCode()).isZero();
@@ -82,6 +81,31 @@ class MavenCentralCliAppTest {
         assertThat(result.getOutput()).isEmpty();
         assertThat(result.getErrorOutput()).contains("Missing required parameter");
         assertThat(result.getErrorOutput()).contains("Usage:");
+    }
+
+    @Test
+    void getVersionsForSpecificGroupIdAndArtifactId(QuarkusMainLauncher launcher) {
+        // create mocked Maven Central Search endpoint
+        var response = loadClassPathResource("/versions-search_maven-core.json");
+
+        mockServerClient.when(request()
+                        .withMethod("GET")
+                        .withPath("/solrsearch/select")
+                        .withQueryStringParameter("q", "g:org.apache.maven AND a:maven-core")
+                        .withQueryStringParameter("core", "gav"))
+                .respond(httpRequest -> response()
+                        .withStatusCode(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(response));
+
+        LaunchResult result = launcher.launch("org.apache.maven:maven-core");
+
+        assertThat(result.exitCode()).isZero();
+        assertThat(result.getOutput()).containsOnlyOnce("org.apache.maven");
+        assertThat(result.getOutput()).containsOnlyOnce("maven-core");
+        assertThat(result.getOutput()).containsOnlyOnce("3.8.7");
+        assertThat(result.getOutput()).containsOnlyOnce("4.0.0-alpha-3");
+        assertThat(result.getErrorOutput()).isEmpty();
     }
 
     private String loadClassPathResource(String classpath) {
