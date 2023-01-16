@@ -11,10 +11,10 @@ import javax.inject.Inject;
 public class MavenCentralCliApp implements QuarkusApplication {
 
     private CommandLine.IFactory factory;
-    private ListArtifactsCommand listArtifactsCommand;
+    private MainCommand listArtifactsCommand;
 
     @Inject
-    public MavenCentralCliApp(CommandLine.IFactory factory, ListArtifactsCommand listArtifactsCommand) {
+    public MavenCentralCliApp(CommandLine.IFactory factory, MainCommand listArtifactsCommand) {
         this.factory = factory;
         this.listArtifactsCommand = listArtifactsCommand;
     }

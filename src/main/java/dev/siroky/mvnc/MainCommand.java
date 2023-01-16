@@ -12,15 +12,15 @@ import javax.enterprise.inject.Default;
 
 @Default
 @CommandLine.Command(name = "mvnc", mixinStandardHelpOptions = true, versionProvider = PicocliVersionProvider.class,
-        description = "List Maven artifacts based on groupId and artifactId, and their versions")
-public class ListArtifactsCommand implements Runnable {
+        description = "Search Maven Central based on groupId and artifactId")
+public class MainCommand implements Runnable {
 
-    @CommandLine.Parameters(index = "0", description = "Maven artifact coordinates, e.g. org.apache.maven:maven-core")
+    @CommandLine.Parameters(index = "0", description = "Maven artifact coordinates, e.g. org.apache.maven:maven-core or just maven-core")
     String artifactCoordinates;
 
     private final MavenCentralRestClient mavenCentralClient;
 
-    public ListArtifactsCommand(@RestClient MavenCentralRestClient mavenCentralClient) {
+    public MainCommand(@RestClient MavenCentralRestClient mavenCentralClient) {
         this.mavenCentralClient = mavenCentralClient;
     }
 
