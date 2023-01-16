@@ -17,9 +17,10 @@
     <!-- dependency versions -->
     <quarkus.platform.version>2.15.3.Final</quarkus.platform.version>
     <assertj.version>3.24.1</assertj.version>
+    <mockserver.version>5.15.0</mockserver.version>
     <!-- plugin versions -->
     <compiler-plugin.version>3.10.1</compiler-plugin.version>
-    <surefire-plugin.version>3.0.0-M7</surefire-plugin.version>
+    <surefire-plugin.version>3.0.0-M8</surefire-plugin.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -59,14 +60,9 @@
     <dependency>
       <groupId>org.mock-server</groupId>
       <artifactId>mockserver-junit-jupiter-no-dependencies</artifactId>
-      <version>5.15.0</version>
+      <version>${mockserver.version}</version>
       <scope>test</scope>
     </dependency>
-<!--    <dependency>-->
-<!--      <groupId>io.rest-assured</groupId>-->
-<!--      <artifactId>rest-assured</artifactId>-->
-<!--      <scope>test</scope>-->
-<!--    </dependency>-->
   </dependencies>
   <build>
     <resources>
@@ -108,7 +104,6 @@
         <configuration>
           <systemPropertyVariables>
             <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
-            <maven.home>${maven.home}</maven.home>
           </systemPropertyVariables>
         </configuration>
       </plugin>
@@ -126,7 +121,6 @@
               <systemPropertyVariables>
                 <native.image.path>${project.build.directory}/${project.build.finalName}-runner</native.image.path>
                 <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
-                <maven.home>${maven.home}</maven.home>
               </systemPropertyVariables>
             </configuration>
           </execution>
