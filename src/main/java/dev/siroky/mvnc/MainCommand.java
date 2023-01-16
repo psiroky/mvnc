@@ -41,8 +41,8 @@ public class MainCommand implements Runnable {
         var searchTerm = "a:" + artifactId;
         SearchResponse searchResponse = mavenCentralClient.searchByTerm(searchTerm);
 
-        for (ArtifactWithLatestVersion artifact : searchResponse.response().docs()) {
-            System.out.println(artifact.g() + ":" + artifact.a() + ":" + artifact.latestVersion());
+        for (Artifact artifact : searchResponse.artifacts()) {
+            System.out.println(artifact.groupId() + ":" + artifact.artifactId() + ":" + artifact.version());
         }
     }
 
@@ -50,9 +50,9 @@ public class MainCommand implements Runnable {
         var searchTerm = "g:" + groupId + " AND " + "a:" + artifactId;
         ArtifactVersionsResponse artifactVersionsResponse = mavenCentralClient.fetchArtifactVersions(searchTerm);
         System.out.println("Group ID: " + groupId + ", artifact ID: " + artifactId);
-        System.out.println("Versions (total: " + artifactVersionsResponse.response().numFound() + "): ");
-        for (Artifact artifact : artifactVersionsResponse.response().docs()) {
-            System.out.println(artifact.v());
+        System.out.println("Versions (total: " + artifactVersionsResponse.total() + "): ");
+        for (Artifact artifact : artifactVersionsResponse.artifacts()) {
+            System.out.println(artifact.version());
         }
     }
 }

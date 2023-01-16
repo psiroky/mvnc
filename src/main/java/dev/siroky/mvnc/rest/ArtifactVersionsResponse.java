@@ -1,4 +1,9 @@
 package dev.siroky.mvnc.rest;
 
-public record ArtifactVersionsResponse(ArtifactVersionsResponseData response) {
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+import java.util.List;
+
+@JsonDeserialize(using = ArtifactVersionsResponseJsonDeserializer.class)
+public record ArtifactVersionsResponse(int total, List<Artifact> artifacts) {
 }
