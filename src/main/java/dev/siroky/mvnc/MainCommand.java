@@ -9,6 +9,9 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 import picocli.CommandLine;
 
 import javax.enterprise.inject.Default;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Default
 @CommandLine.Command(name = "mvnc", mixinStandardHelpOptions = true, versionProvider = PicocliVersionProvider.class,
@@ -49,10 +52,12 @@ public class MainCommand implements Runnable {
     private void handleArtifactVersionsFetch(String groupId, String artifactId) {
         var searchTerm = "g:" + groupId + " AND " + "a:" + artifactId;
         ArtifactVersionsResponse artifactVersionsResponse = mavenCentralClient.fetchArtifactVersions(searchTerm);
-        System.out.println("Group ID: " + groupId + ", artifact ID: " + artifactId);
-        System.out.println("Versions (total: " + artifactVersionsResponse.total() + "): ");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+                .withZone(ZoneId.systemDefault());
+        System.out.println("Version | Released on");
         for (Artifact artifact : artifactVersionsResponse.artifacts()) {
-            System.out.println(artifact.version());
+            var releasedAt = artifact.timestamp().atZone(ZoneId.systemDefault());
+            System.out.println(artifact.version() + " | " + formatter.format(releasedAt));
         }
     }
 }

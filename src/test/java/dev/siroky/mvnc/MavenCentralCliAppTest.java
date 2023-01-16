@@ -101,10 +101,8 @@ class MavenCentralCliAppTest {
         LaunchResult result = launcher.launch("org.apache.maven:maven-core");
 
         assertThat(result.exitCode()).isZero();
-        assertThat(result.getOutput()).containsOnlyOnce("org.apache.maven");
-        assertThat(result.getOutput()).containsOnlyOnce("maven-core");
-        assertThat(result.getOutput()).containsOnlyOnce("3.8.7");
-        assertThat(result.getOutput()).containsOnlyOnce("4.0.0-alpha-3");
+        assertThat(result.getOutput()).containsOnlyOnce("3.8.7 | 2022-12-24");
+        assertThat(result.getOutput()).containsOnlyOnce("4.0.0-alpha-3 | 2022-12-12");
         assertThat(result.getErrorOutput()).isEmpty();
     }
 

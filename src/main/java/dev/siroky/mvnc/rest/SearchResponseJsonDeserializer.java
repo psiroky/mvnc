@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +30,8 @@ public class SearchResponseJsonDeserializer extends StdDeserializer<SearchRespon
             var groupId = doc.get("g").asText();
             var artifactId = doc.get("a").asText();
             var version = doc.get("latestVersion").asText();
-            artifacts.add(new Artifact(groupId, artifactId, version));
+            var timestamp = Instant.ofEpochMilli(doc.get("timestamp").asLong());
+            artifacts.add(new Artifact(groupId, artifactId, version, timestamp));
         }
         return new SearchResponse(numFound, artifacts);
     }
