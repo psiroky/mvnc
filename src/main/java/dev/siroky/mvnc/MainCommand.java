@@ -52,7 +52,7 @@ public class MainCommand implements Runnable {
     private void handleArtifactVersionsFetch(String groupId, String artifactId) {
         var searchTerm = "g:" + groupId + " AND " + "a:" + artifactId;
         ArtifactVersionsResponse artifactVersionsResponse = mavenCentralClient.fetchArtifactVersions(searchTerm);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy")
                 .withZone(ZoneId.systemDefault());
         System.out.println("Version | Released on");
         for (Artifact artifact : artifactVersionsResponse.artifacts()) {
