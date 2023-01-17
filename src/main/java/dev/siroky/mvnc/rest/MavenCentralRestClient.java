@@ -10,10 +10,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-@RegisterRestClient(configKey = "maven-central-search")
 @Path("/solrsearch/select")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@RegisterRestClient(configKey = "maven-central-search")
 public interface MavenCentralRestClient {
 
     @GET

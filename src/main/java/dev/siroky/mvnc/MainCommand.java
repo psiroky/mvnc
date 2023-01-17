@@ -2,7 +2,6 @@ package dev.siroky.mvnc;
 
 import dev.siroky.mvnc.rest.Artifact;
 import dev.siroky.mvnc.rest.ArtifactVersionsResponse;
-import dev.siroky.mvnc.rest.ArtifactWithLatestVersion;
 import dev.siroky.mvnc.rest.MavenCentralRestClient;
 import dev.siroky.mvnc.rest.SearchResponse;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
@@ -10,13 +9,15 @@ import picocli.CommandLine;
 
 import javax.enterprise.inject.Default;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Default
 @CommandLine.Command(name = "mvnc", mixinStandardHelpOptions = true, versionProvider = PicocliVersionProvider.class,
         description = "Search Maven Central based on groupId and artifactId")
 public class MainCommand implements Runnable {
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd-MMM-yyyy")
+            .withZone(ZoneId.systemDefault());
 
     @CommandLine.Parameters(index = "0", description = "Maven artifact coordinates, e.g. org.apache.maven:maven-core or just maven-core")
     String artifactCoordinates;
@@ -44,20 +45,23 @@ public class MainCommand implements Runnable {
         var searchTerm = "a:" + artifactId;
         SearchResponse searchResponse = mavenCentralClient.searchByTerm(searchTerm);
 
-        for (Artifact artifact : searchResponse.artifacts()) {
-            System.out.println(artifact.groupId() + ":" + artifact.artifactId() + ":" + artifact.version());
-        }
+        List<Artifact> artifacts = searchResponse.artifacts();
+        var groupIdColumn = new TableColumn("Group ID", artifacts.stream().map(Artifact::groupId).toList());
+        var artifactIdColumn = new TableColumn("Artifact ID", artifacts.stream().map(Artifact::artifactId).toList());
+        var versionColumn = new TableColumn("Version", artifacts.stream().map(Artifact::version).toList());
+        var releasedOnColumn = new TableColumn("Released on", artifacts.stream().map(a -> DATE_FORMATTER.format(a.timestamp())).toList());
+        var formatter = new SimpleTabularFormatter(List.of(groupIdColumn, artifactIdColumn, versionColumn, releasedOnColumn));
+        System.out.println(formatter.format());
     }
 
     private void handleArtifactVersionsFetch(String groupId, String artifactId) {
         var searchTerm = "g:" + groupId + " AND " + "a:" + artifactId;
         ArtifactVersionsResponse artifactVersionsResponse = mavenCentralClient.fetchArtifactVersions(searchTerm);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy")
-                .withZone(ZoneId.systemDefault());
-        System.out.println("Version | Released on");
-        for (Artifact artifact : artifactVersionsResponse.artifacts()) {
-            var releasedAt = artifact.timestamp().atZone(ZoneId.systemDefault());
-            System.out.println(artifact.version() + " | " + formatter.format(releasedAt));
-        }
+
+        List<Artifact> artifacts = artifactVersionsResponse.artifacts();
+        var versionColumn = new TableColumn("Version", artifacts.stream().map(Artifact::version).toList());
+        var releasedOnColumn = new TableColumn("Released on", artifacts.stream().map(a -> DATE_FORMATTER.format(a.timestamp())).toList());
+        var formatter = new SimpleTabularFormatter(List.of(versionColumn, releasedOnColumn));
+        System.out.println(formatter.format());
     }
 }

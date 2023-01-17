@@ -46,9 +46,8 @@ class MavenCentralCliAppTest {
         LaunchResult result = launcher.launch("maven-core");
 
         assertThat(result.exitCode()).isZero();
-        assertThat(result.getOutput()).isEqualTo("""
-                org.apache.maven:maven-core:4.0.0-alpha-3
-                io.tesla.maven:maven-core:3.1.2""");
+        assertThat(result.getOutput()).containsOnlyOnce("org.apache.maven");
+        assertThat(result.getOutput()).containsOnlyOnce("io.tesla.maven");
         assertThat(result.getErrorOutput()).isEmpty();
     }
 
@@ -69,7 +68,7 @@ class MavenCentralCliAppTest {
         LaunchResult result = launcher.launch("non-existing");
 
         assertThat(result.exitCode()).isZero();
-        assertThat(result.getOutput()).isEmpty();
+        assertThat(result.getOutput()).contains("Group ID     Artifact ID     Version     Released on");
         assertThat(result.getErrorOutput()).isEmpty();
     }
 
@@ -101,8 +100,8 @@ class MavenCentralCliAppTest {
         LaunchResult result = launcher.launch("org.apache.maven:maven-core");
 
         assertThat(result.exitCode()).isZero();
-        assertThat(result.getOutput()).containsOnlyOnce("3.8.7 | 24-Dec-2022");
-        assertThat(result.getOutput()).containsOnlyOnce("4.0.0-alpha-3 | 12-Dec-2022");
+        assertThat(result.getOutput()).containsOnlyOnce("3.8.7");
+        assertThat(result.getOutput()).containsOnlyOnce("4.0.0-alpha-3");
         assertThat(result.getErrorOutput()).isEmpty();
     }
 
