@@ -19,6 +19,9 @@ public class MainCommand implements Runnable {
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd-MMM-yyyy")
             .withZone(ZoneId.systemDefault());
 
+    @CommandLine.Option(names = {"-l", "--limit"}, defaultValue = "20", description = "Maximum number of values")
+    int limit;
+
     @CommandLine.Parameters(index = "0", description = "Maven artifact coordinates, e.g. org.apache.maven:maven-core or just maven-core")
     String artifactCoordinates;
 
@@ -43,7 +46,7 @@ public class MainCommand implements Runnable {
 
     private void handleArtifactSearch(String artifactId) {
         var searchTerm = "a:" + artifactId;
-        SearchResponse searchResponse = mavenCentralClient.searchByTerm(searchTerm);
+        SearchResponse searchResponse = mavenCentralClient.searchByTerm(searchTerm, limit);
 
         List<Artifact> artifacts = searchResponse.artifacts();
         var groupIdColumn = new TableColumn("Group ID", artifacts.stream().map(Artifact::groupId).toList());
@@ -56,7 +59,7 @@ public class MainCommand implements Runnable {
 
     private void handleArtifactVersionsFetch(String groupId, String artifactId) {
         var searchTerm = "g:" + groupId + " AND " + "a:" + artifactId;
-        ArtifactVersionsResponse artifactVersionsResponse = mavenCentralClient.fetchArtifactVersions(searchTerm);
+        ArtifactVersionsResponse artifactVersionsResponse = mavenCentralClient.fetchArtifactVersions(searchTerm, limit);
 
         List<Artifact> artifacts = artifactVersionsResponse.artifacts();
         var versionColumn = new TableColumn("Version", artifacts.stream().map(Artifact::version).toList());

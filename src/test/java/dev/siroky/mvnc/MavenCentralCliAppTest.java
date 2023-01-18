@@ -52,6 +52,28 @@ class MavenCentralCliAppTest {
     }
 
     @Test
+    void searchExistingArtifact_withLimit(QuarkusMainLauncher launcher) {
+        // create mocked Maven Central Search endpoint
+        var response = loadClassPathResource("/artifact-id-search_maven-core_limit-1.json");
+        mockServerClient.when(request()
+                        .withMethod("GET")
+                        .withPath("/solrsearch/select")
+                        .withQueryStringParameter("q", "a:maven-core")
+                        .withQueryStringParameter("rows", "1"))
+                .respond(httpRequest -> response()
+                        .withStatusCode(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(response));
+
+        LaunchResult result = launcher.launch("maven-core", "-l", "1");
+
+        assertThat(result.exitCode()).isZero();
+        assertThat(result.getOutput()).containsOnlyOnce("org.apache.maven");
+        assertThat(result.getOutput()).doesNotContain("io.tesla.maven");
+        assertThat(result.getErrorOutput()).isEmpty();
+    }
+
+    @Test
     void searchNonExistingArtifact(QuarkusMainLauncher launcher) {
         // create mocked Maven Central Search endpoint
         var response = loadClassPathResource("/artifact-id-search_non-existing.json");
