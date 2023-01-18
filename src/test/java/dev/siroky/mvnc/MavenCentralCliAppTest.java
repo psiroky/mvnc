@@ -107,7 +107,7 @@ class MavenCentralCliAppTest {
     @Test
     void getVersionsForSpecificGroupIdAndArtifactId(QuarkusMainLauncher launcher) {
         // create mocked Maven Central Search endpoint
-        var response = loadClassPathResource("/versions-search_maven-core.json");
+        var response = loadClassPathResource("/groupId-and-artifactId-search_maven-core.json");
 
         mockServerClient.when(request()
                         .withMethod("GET")

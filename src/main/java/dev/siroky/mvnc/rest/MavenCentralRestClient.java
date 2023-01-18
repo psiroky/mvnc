@@ -21,9 +21,6 @@ import javax.ws.rs.core.MediaType;
 public interface MavenCentralRestClient {
 
     @GET
-    SearchResponse searchByTerm(@QueryParam("q") String term, @QueryParam("rows") int rows);
-
-    @GET
     @ClientQueryParam(name = "core", value = "gav")
-    ArtifactVersionsResponse fetchArtifactVersions(@QueryParam("q") String term, @QueryParam("rows") int rows);
+    ArtifactSearchResponse searchByTerm(@QueryParam("q") String term, @QueryParam("rows") int rows);
 }
