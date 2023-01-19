@@ -17,8 +17,13 @@
     <assertj.version>3.24.1</assertj.version>
     <mockserver.version>5.15.0</mockserver.version>
     <!-- plugin versions -->
+    <maven-clean-plugin.version>3.2.0</maven-clean-plugin.version>
+    <maven-resources-plugin.version>3.3.0</maven-resources-plugin.version>
+    <spotless-plugin.version>2.30.0</spotless-plugin.version>
     <compiler-plugin.version>3.10.1</compiler-plugin.version>
     <surefire-plugin.version>3.0.0-M8</surefire-plugin.version>
+    <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
+    <maven-install-plugin.version>3.1.0</maven-install-plugin.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -76,6 +81,19 @@
     </resources>
     <plugins>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-clean-plugin</artifactId>
+        <version>${maven-clean-plugin.version}</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>${maven-resources-plugin.version}</version>
+        <configuration>
+          <propertiesEncoding>UTF-8</propertiesEncoding>
+        </configuration>
+      </plugin>
+      <plugin>
         <groupId>io.quarkus.platform</groupId>
         <artifactId>quarkus-maven-plugin</artifactId>
         <version>${quarkus.platform.version}</version>
@@ -91,19 +109,9 @@
         </executions>
       </plugin>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>${compiler-plugin.version}</version>
-        <configuration>
-          <compilerArgs>
-            <arg>-parameters</arg>
-          </compilerArgs>
-        </configuration>
-      </plugin>
-      <plugin>
         <groupId>com.diffplug.spotless</groupId>
         <artifactId>spotless-maven-plugin</artifactId>
-        <version>2.30.0</version>
+        <version>${spotless-plugin.version}</version>
         <configuration>
           <java>
             <!-- orders of used formatters is important, eg. palantir overrides importOrder, so should be first -->
@@ -134,6 +142,16 @@
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${compiler-plugin.version}</version>
+        <configuration>
+          <compilerArgs>
+            <arg>-parameters</arg>
+          </compilerArgs>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>${surefire-plugin.version}</version>
         <configuration>
@@ -160,6 +178,16 @@
             </configuration>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>${maven-jar-plugin.version}</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-install-plugin</artifactId>
+        <version>${maven-install-plugin.version}</version>
       </plugin>
     </plugins>
   </build>
