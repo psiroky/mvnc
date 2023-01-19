@@ -1,14 +1,14 @@
 package dev.siroky.mvnc.rest;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-
 import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 public class SearchResponseJsonDeserializer extends StdDeserializer<ArtifactSearchResponse> {
 
@@ -21,7 +21,8 @@ public class SearchResponseJsonDeserializer extends StdDeserializer<ArtifactSear
     }
 
     @Override
-    public ArtifactSearchResponse deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
+    public ArtifactSearchResponse deserialize(JsonParser jsonParser, DeserializationContext deserializationContext)
+            throws IOException {
         JsonNode rootNode = jsonParser.getCodec().readTree(jsonParser);
         JsonNode responseNode = rootNode.get("response");
         List<Artifact> artifacts = new ArrayList<>();

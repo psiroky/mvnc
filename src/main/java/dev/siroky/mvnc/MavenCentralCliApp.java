@@ -1,11 +1,11 @@
 package dev.siroky.mvnc;
 
+import javax.inject.Inject;
+
 import io.quarkus.runtime.Quarkus;
 import io.quarkus.runtime.QuarkusApplication;
 import io.quarkus.runtime.annotations.QuarkusMain;
 import picocli.CommandLine;
-
-import javax.inject.Inject;
 
 @QuarkusMain
 public class MavenCentralCliApp implements QuarkusApplication {

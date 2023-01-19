@@ -8,7 +8,6 @@ public class SimpleTabularFormatter {
     private static final String HORIZONTAL_DELIMITER_CHAR = "-";
     private static final int DEFAULT_MIN_SPACE_BETWEEN_COLUMNS = 5;
 
-
     private final List<TableColumn> columns;
     private final int minSpaceBetweenColumns;
 
@@ -28,7 +27,9 @@ public class SimpleTabularFormatter {
 
         var headerRow = formatRow(rows.get(0), minSpaceBetweenColumns);
         resultBuilder.append(headerRow).append(LINE_SEPARATOR);
-        resultBuilder.append(HORIZONTAL_DELIMITER_CHAR.repeat(headerRow.length())).append(LINE_SEPARATOR);
+        resultBuilder
+                .append(HORIZONTAL_DELIMITER_CHAR.repeat(headerRow.length()))
+                .append(LINE_SEPARATOR);
 
         for (var rowNr = 1; rowNr < rows.size(); rowNr++) {
             resultBuilder.append(formatRow(rows.get(rowNr), minSpaceBetweenColumns));
@@ -60,19 +61,14 @@ public class SimpleTabularFormatter {
     }
 
     private static int determineNumberOfValueRows(List<TableColumn> columns) {
-        return columns.stream()
-                .mapToInt(c -> c.values().size())
-                .max()
-                .orElse(0);
+        return columns.stream().mapToInt(c -> c.values().size()).max().orElse(0);
     }
 
     private List<Integer> maxLengthPerColumn(List<TableColumn> columns) {
         return columns.stream()
                 .mapToInt(col -> {
-                    int maxValueLength = col.values().stream()
-                            .mapToInt(String::length)
-                            .max()
-                            .orElse(0);
+                    int maxValueLength =
+                            col.values().stream().mapToInt(String::length).max().orElse(0);
                     return Math.max(col.header().length(), maxValueLength);
                 })
                 .boxed()
@@ -91,6 +87,5 @@ public class SimpleTabularFormatter {
         return rowBuilder.toString().trim();
     }
 
-    private record TableRow(List<String> values, List<Integer> maxTextSizes) {
-    }
+    private record TableRow(List<String> values, List<Integer> maxTextSizes) {}
 }

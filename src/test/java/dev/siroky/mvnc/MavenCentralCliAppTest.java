@@ -1,5 +1,7 @@
 package dev.siroky.mvnc;
 
+import java.util.Map;
+
 import io.quarkus.test.junit.QuarkusTestProfile;
 import io.quarkus.test.junit.TestProfile;
 import io.quarkus.test.junit.main.LaunchResult;
@@ -10,8 +12,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.junit.jupiter.MockServerExtension;
 import org.mockserver.junit.jupiter.MockServerSettings;
-
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockserver.model.HttpRequest.request;
@@ -34,7 +34,8 @@ class MavenCentralCliAppTest {
     void searchExistingArtifact(QuarkusMainLauncher launcher) {
         // create mocked Maven Central Search endpoint
         var response = loadClassPathResource("/artifact-id-search_maven-core.json");
-        mockServerClient.when(request()
+        mockServerClient
+                .when(request()
                         .withMethod("GET")
                         .withPath("/solrsearch/select")
                         .withQueryStringParameter("q", "a:maven-core"))
@@ -55,7 +56,8 @@ class MavenCentralCliAppTest {
     void searchExistingArtifact_withLimit(QuarkusMainLauncher launcher) {
         // create mocked Maven Central Search endpoint
         var response = loadClassPathResource("/artifact-id-search_maven-core_limit-1.json");
-        mockServerClient.when(request()
+        mockServerClient
+                .when(request()
                         .withMethod("GET")
                         .withPath("/solrsearch/select")
                         .withQueryStringParameter("q", "a:maven-core")
@@ -78,7 +80,8 @@ class MavenCentralCliAppTest {
         // create mocked Maven Central Search endpoint
         var response = loadClassPathResource("/artifact-id-search_non-existing.json");
 
-        mockServerClient.when(request()
+        mockServerClient
+                .when(request()
                         .withMethod("GET")
                         .withPath("/solrsearch/select")
                         .withQueryStringParameter("q", "a:non-existing"))
@@ -109,7 +112,8 @@ class MavenCentralCliAppTest {
         // create mocked Maven Central Search endpoint
         var response = loadClassPathResource("/groupId-and-artifactId-search_maven-core.json");
 
-        mockServerClient.when(request()
+        mockServerClient
+                .when(request()
                         .withMethod("GET")
                         .withPath("/solrsearch/select")
                         .withQueryStringParameter("q", "g:org.apache.maven AND a:maven-core")
@@ -163,7 +167,6 @@ class MavenCentralCliAppTest {
         assertThat(result.getErrorOutput()).isEmpty();
     }
 
-
     private String loadClassPathResource(String classpath) {
         try (var resourceStream = getClass().getResourceAsStream(classpath)) {
             if (resourceStream == null) {
@@ -174,7 +177,6 @@ class MavenCentralCliAppTest {
             throw new IllegalArgumentException("Cannot load classpath resource '" + classpath + "'", e);
         }
     }
-
 
     public static class TestProfile implements QuarkusTestProfile {
         @Override

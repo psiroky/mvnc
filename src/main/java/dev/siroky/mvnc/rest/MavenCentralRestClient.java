@@ -1,16 +1,16 @@
 package dev.siroky.mvnc.rest;
 
-import io.quarkus.rest.client.reactive.ClientQueryParam;
-import org.eclipse.microprofile.faulttolerance.Retry;
-import org.eclipse.microprofile.faulttolerance.Timeout;
-import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+
+import io.quarkus.rest.client.reactive.ClientQueryParam;
+import org.eclipse.microprofile.faulttolerance.Retry;
+import org.eclipse.microprofile.faulttolerance.Timeout;
+import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 @Path("/solrsearch/select")
 @Produces(MediaType.APPLICATION_JSON)

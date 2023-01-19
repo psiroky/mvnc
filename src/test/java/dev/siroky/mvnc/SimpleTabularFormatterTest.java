@@ -1,8 +1,8 @@
 package dev.siroky.mvnc;
 
-import org.junit.jupiter.api.Test;
-
 import java.util.List;
+
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -16,7 +16,8 @@ class SimpleTabularFormatterTest {
 
         String result = formatter.format();
 
-        assertThat(result).isEqualTo("""
+        assertThat(result)
+                .isEqualTo("""
                 Version     Released on
                 -----------------------""");
     }
@@ -29,7 +30,9 @@ class SimpleTabularFormatterTest {
 
         String result = formatter.format();
 
-        assertThat(result).isEqualTo("""
+        assertThat(result)
+                .isEqualTo(
+                        """
                 Version     Released on
                 -----------------------
                 3.8.7       24-Dec-2022""");
@@ -43,7 +46,9 @@ class SimpleTabularFormatterTest {
 
         String result = formatter.format();
 
-        assertThat(result).isEqualTo("""
+        assertThat(result)
+                .isEqualTo(
+                        """
                 Version           Released on
                 -----------------------------
                 4.0.0-alpha-3     12-Dec-2022""");
@@ -57,7 +62,9 @@ class SimpleTabularFormatterTest {
 
         String result = formatter.format();
 
-        assertThat(result).isEqualTo("""
+        assertThat(result)
+                .isEqualTo(
+                        """
                 Version     Released on
                 -----------------------
                 3.8.7       24-Dec-2022
@@ -72,7 +79,9 @@ class SimpleTabularFormatterTest {
 
         String result = formatter.format();
 
-        assertThat(result).isEqualTo("""
+        assertThat(result)
+                .isEqualTo(
+                        """
                 Version           Released on
                 -----------------------------
                 3.8.7             24-Dec-2022
