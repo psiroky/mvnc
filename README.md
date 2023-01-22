@@ -2,6 +2,9 @@
 Simple command line tool to search Maven Central.
 
 ## Building native binary
+> **_Note:_** Native binary is created using GraalVM. You either need to have GraalVM installed locally and $GRAALVM_HOME
+> environment variable set, or have local Docker environment working to let Quarkus download a GraalVM builder image.
+
 Run the following Maven command to build a native `mvnc` binary:
 ```shell
 $ mvn verify -Pnative
@@ -32,3 +35,10 @@ org.apache.maven.plugins     maven-surefire-plugin     3.0.0-M6     31-Mar-2022
 org.apache.maven.plugins     maven-surefire-plugin     3.0.0-M5     10-Jun-2020
 org.apache.maven.plugins     maven-surefire-plugin     3.0.0-M4     13-Nov-2019
 ```
+
+## FAQ
+**Q**: Why is the tool built of top of Quarkus, seems like an overkill?
+
+**A**: The primary reason is that I wanted to play with and try Quarkus for CLI app development, together with
+Picocli. There may be better ways to do this, but in the end I am quite happy with the whole Quarkus experience.
+---
