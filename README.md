@@ -41,4 +41,3 @@ org.apache.maven.plugins     maven-surefire-plugin     3.0.0-M4     13-Nov-2019
 
 **A**: The primary reason is that I wanted to play with and try Quarkus for CLI app development, together with
 Picocli. There may be better ways to do this, but in the end I am quite happy with the whole Quarkus experience.
----
