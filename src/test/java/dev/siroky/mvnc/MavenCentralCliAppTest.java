@@ -31,7 +31,7 @@ class MavenCentralCliAppTest {
     }
 
     @Test
-    void searchExistingArtifact(QuarkusMainLauncher launcher) {
+    void searchExistingArtifactByArtifactId(QuarkusMainLauncher launcher) {
         // create mocked Maven Central Search endpoint
         var response = loadClassPathResource("/artifact-id-search_maven-core.json");
         mockServerClient
@@ -50,6 +50,29 @@ class MavenCentralCliAppTest {
         assertThat(result.getOutput()).containsOnlyOnce("org.apache.maven");
         assertThat(result.getOutput()).containsOnlyOnce("io.tesla.maven");
         assertThat(result.getErrorOutput()).isEmpty();
+    }
+
+    @Test
+    void searchExistingArtifactByArtifactId_stripLeadingAsterisk(QuarkusMainLauncher launcher) {
+        // create mocked Maven Central Search endpoint
+        var response = loadClassPathResource("/artifact-id-search_maven-core.json");
+        mockServerClient
+                .when(request()
+                        .withMethod("GET")
+                        .withPath("/solrsearch/select")
+                        .withQueryStringParameter("q", "a:maven-core"))
+                .respond(httpRequest -> response()
+                        .withStatusCode(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(response));
+
+        LaunchResult result = launcher.launch("*maven-core");
+
+        assertThat(result.exitCode()).isZero();
+        assertThat(result.getOutput()).containsOnlyOnce("org.apache.maven");
+        assertThat(result.getOutput()).containsOnlyOnce("io.tesla.maven");
+        assertThat(result.getErrorOutput())
+                .contains("Artifact coordinate cannot start with '*', using 'maven-core' instead of '*maven-core'.");
     }
 
     @Test
@@ -108,7 +131,25 @@ class MavenCentralCliAppTest {
     }
 
     @Test
-    void getVersionsForSpecificGroupIdAndArtifactId(QuarkusMainLauncher launcher) {
+    void failWithBlankArtifactId(QuarkusMainLauncher launcher) {
+        LaunchResult result = launcher.launch("");
+
+        assertThat(result.exitCode()).isNotZero();
+        assertThat(result.getOutput()).isEmpty();
+        assertThat(result.getErrorOutput()).contains("Invalid artifactId ''");
+    }
+
+    @Test
+    void failWithBlankGroupId(QuarkusMainLauncher launcher) {
+        LaunchResult result = launcher.launch(":test");
+
+        assertThat(result.exitCode()).isNotZero();
+        assertThat(result.getOutput()).isEmpty();
+        assertThat(result.getErrorOutput()).contains("Invalid artifact coordinates ':test'");
+    }
+
+    @Test
+    void searchArtifactByGroupIdAndArtifactId(QuarkusMainLauncher launcher) {
         // create mocked Maven Central Search endpoint
         var response = loadClassPathResource("/groupId-and-artifactId-search_maven-core.json");
 
@@ -129,6 +170,33 @@ class MavenCentralCliAppTest {
         assertThat(result.getOutput()).containsOnlyOnce("3.8.7");
         assertThat(result.getOutput()).containsOnlyOnce("4.0.0-alpha-3");
         assertThat(result.getErrorOutput()).isEmpty();
+    }
+
+    @Test
+    void searchArtifactByGroupIdAndArtifactId_stripLeadingAsterisk(QuarkusMainLauncher launcher) {
+        // create mocked Maven Central Search endpoint
+        var response = loadClassPathResource("/groupId-and-artifactId-search_maven-core.json");
+
+        mockServerClient
+                .when(request()
+                        .withMethod("GET")
+                        .withPath("/solrsearch/select")
+                        .withQueryStringParameter("q", "g:org.apache.maven AND a:maven-core")
+                        .withQueryStringParameter("core", "gav"))
+                .respond(httpRequest -> response()
+                        .withStatusCode(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(response));
+
+        LaunchResult result = launcher.launch("*org.apache.maven:*maven-core");
+
+        assertThat(result.exitCode()).isZero();
+        assertThat(result.getOutput()).containsOnlyOnce("3.8.7");
+        assertThat(result.getOutput()).containsOnlyOnce("4.0.0-alpha-3");
+        assertThat(result.getErrorOutput())
+                .contains(
+                        "Artifact coordinate cannot start with '*', using 'org.apache.maven' instead of '*org.apache.maven'.")
+                .contains("Artifact coordinate cannot start with '*', using 'maven-core' instead of '*maven-core'.");
     }
 
     @Test

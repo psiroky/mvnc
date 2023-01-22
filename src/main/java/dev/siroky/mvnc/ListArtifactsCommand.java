@@ -18,6 +18,7 @@ import picocli.CommandLine;
         versionProvider = PicocliVersionProvider.class,
         description = "Search Maven Central based on groupId and artifactId")
 public class ListArtifactsCommand implements Runnable {
+    private static final String COORDINATE_DELIMITER = ":";
     private static final DateTimeFormatter DATE_FORMATTER =
             DateTimeFormatter.ofPattern("dd-MMM-yyyy").withZone(ZoneId.systemDefault());
 
@@ -40,21 +41,54 @@ public class ListArtifactsCommand implements Runnable {
 
     @Override
     public void run() {
-        String[] parts = artifactCoordinates.split(":");
-        if (parts.length == 0 || parts.length > 2) {
+        if (artifactCoordinates.contains(COORDINATE_DELIMITER)) {
+            runWithGroupIdAndArtifactId(artifactCoordinates);
+        } else {
+            runWithArtifactId(artifactCoordinates);
+        }
+    }
+
+    private void runWithGroupIdAndArtifactId(String artifactCoordinates) {
+        String[] parts = artifactCoordinates.split(COORDINATE_DELIMITER);
+        if (parts.length != 2) {
             throw new IllegalArgumentException("Invalid artifact coordinates '" + artifactCoordinates + "'");
         }
-        if (parts.length == 1) {
-            searchByArtifactId(parts[0]);
-        } else {
-            searchByGroupIdAndArtifactId(parts[0], parts[1]);
+        var groupId = sanitizeCoordinate(parts[0]);
+        var artifactId = sanitizeCoordinate(parts[1]);
+        if (artifactId.isBlank() || groupId.isBlank()) {
+            throw new IllegalArgumentException("Invalid artifact coordinates '" + artifactCoordinates + "'");
         }
+        searchByGroupIdAndArtifactId(groupId, artifactId);
+    }
+
+    private void runWithArtifactId(String artifactId) {
+        var sanitizedArtifactId = sanitizeCoordinate(artifactId);
+        if (sanitizedArtifactId.isBlank()) {
+            throw new IllegalArgumentException("Invalid artifactId '" + artifactCoordinates + "'");
+        }
+        searchByArtifactId(sanitizedArtifactId);
     }
 
     private void searchByArtifactId(String artifactId) {
         var searchTerm = "a:" + artifactId;
         ArtifactSearchResponse searchResponse = mavenCentralClient.searchByTerm(searchTerm, limit);
         printArtifactTable(searchResponse.artifacts());
+    }
+
+    private String sanitizeCoordinate(String coordinate) {
+        if (coordinate.startsWith("*")) {
+            String sanitized;
+            if (coordinate.length() == 1) {
+                sanitized = "";
+            } else {
+                sanitized = coordinate.substring(1);
+            }
+            System.err.println(String.format(
+                    "Artifact coordinate cannot start with '*', using '%s' instead of '%s'.", sanitized, coordinate));
+            return sanitized;
+        } else {
+            return coordinate;
+        }
     }
 
     private void searchByGroupIdAndArtifactId(String groupId, String artifactId) {
