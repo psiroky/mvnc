@@ -9,17 +9,15 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-        with:
-          persist-credentials: false
-
-      - uses: actions/setup-java@v3
+      - name: Setup Maven
+        uses: s4u/setup-maven-action@v1.6.0
         with:
           java-version: 17
-          distribution: 'temurin'
-          cache: 'maven'
+          java-distribution: temurin
+          maven-version: 3.8.7
 
-      - uses: graalvm/setup-graalvm@v1
+      - name: Setup GraalVM
+        uses: graalvm/setup-graalvm@v1
         with:
           version: '22.3.0'
           java-version: '17'
