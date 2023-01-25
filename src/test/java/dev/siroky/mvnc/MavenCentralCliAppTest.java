@@ -204,7 +204,8 @@ class MavenCentralCliAppTest {
         LaunchResult result = launcher.launch("-V");
 
         assertThat(result.exitCode()).isZero();
-        assertThat(result.getOutput()).contains("mvnc");
+        assertThat(result.getOutput()).contains("mvnc").doesNotContain("null");
+
         assertThat(result.getErrorOutput()).isEmpty();
     }
 
@@ -213,7 +214,7 @@ class MavenCentralCliAppTest {
         LaunchResult result = launcher.launch("--version");
 
         assertThat(result.exitCode()).isZero();
-        assertThat(result.getOutput()).contains("mvnc");
+        assertThat(result.getOutput()).contains("mvnc").doesNotContain("null");
         assertThat(result.getErrorOutput()).isEmpty();
     }
 

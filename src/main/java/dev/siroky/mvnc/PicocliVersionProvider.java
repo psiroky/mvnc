@@ -16,7 +16,10 @@ public class PicocliVersionProvider implements CommandLine.IVersionProvider {
         Properties properties = new Properties();
         try (var propsStream = url.openStream()) {
             properties.load(propsStream);
-            return new String[] {properties.getProperty("appName") + " " + properties.getProperty("version")};
+            var appName = properties.getProperty("appName");
+            var version = properties.getProperty("version");
+            var commitId = properties.getProperty("commitId");
+            return new String[] {appName + " " + version + " (" + commitId + ")"};
         }
     }
 }
