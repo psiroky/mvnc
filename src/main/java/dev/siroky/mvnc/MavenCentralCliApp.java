@@ -25,6 +25,8 @@ public class MavenCentralCliApp implements QuarkusApplication {
 
     @Override
     public int run(String... args) {
-        return new CommandLine(listArtifactsCommand, factory).execute(args);
+        return new CommandLine(listArtifactsCommand, factory)
+                .setExecutionExceptionHandler(new PrintExceptionMessageHandler())
+                .execute(args);
     }
 }

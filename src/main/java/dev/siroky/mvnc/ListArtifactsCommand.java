@@ -56,7 +56,7 @@ public class ListArtifactsCommand implements Runnable {
         var groupId = sanitizeCoordinate(parts[0]);
         var artifactId = sanitizeCoordinate(parts[1]);
         if (artifactId.isBlank() || groupId.isBlank()) {
-            throw new IllegalArgumentException("Invalid artifact coordinates '" + artifactCoordinates + "'");
+            throw new InvalidArtifactCoordinatesException(artifactCoordinates);
         }
         searchByGroupIdAndArtifactId(groupId, artifactId);
     }
@@ -64,7 +64,7 @@ public class ListArtifactsCommand implements Runnable {
     private void runWithArtifactId(String artifactId) {
         var sanitizedArtifactId = sanitizeCoordinate(artifactId);
         if (sanitizedArtifactId.isBlank()) {
-            throw new IllegalArgumentException("Invalid artifactId '" + artifactCoordinates + "'");
+            throw new InvalidArtifactIdException(artifactId);
         }
         searchByArtifactId(sanitizedArtifactId);
     }
