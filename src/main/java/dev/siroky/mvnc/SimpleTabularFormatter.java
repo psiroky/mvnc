@@ -12,7 +12,7 @@ public class SimpleTabularFormatter {
     private final int minSpaceBetweenColumns;
 
     public SimpleTabularFormatter(List<TableColumn> columns, int minSpaceBetweenColumns) {
-        this.columns = columns;
+        this.columns = List.copyOf(columns);
         this.minSpaceBetweenColumns = minSpaceBetweenColumns;
     }
 
