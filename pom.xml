@@ -16,17 +16,18 @@
     <quarkus.platform.version>2.16.0.Final</quarkus.platform.version>
     <assertj.version>3.24.1</assertj.version>
     <mockserver.version>5.15.0</mockserver.version>
-    <!-- plugin versions -->
+    <!-- maven plugin versions -->
     <git-commit-id-maven-plugin.version>5.0.0</git-commit-id-maven-plugin.version>
     <maven-clean-plugin.version>3.2.0</maven-clean-plugin.version>
+    <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
     <maven-enforcer.plugin.version>3.1.0</maven-enforcer.plugin.version>
-    <spotbugs-maven-plugin.version>4.7.3.0</spotbugs-maven-plugin.version>
     <maven-resources-plugin.version>3.3.0</maven-resources-plugin.version>
-    <spotless-plugin.version>2.30.0</spotless-plugin.version>
-    <compiler-plugin.version>3.10.1</compiler-plugin.version>
-    <surefire-plugin.version>3.0.0-M8</surefire-plugin.version>
-    <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
     <maven-install-plugin.version>3.1.0</maven-install-plugin.version>
+    <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
+    <maven-pmd-plugin.version>3.20.0</maven-pmd-plugin.version>
+    <maven-surefire-plugin.version>3.0.0-M8</maven-surefire-plugin.version>
+    <spotbugs-maven-plugin.version>4.7.3.0</spotbugs-maven-plugin.version>
+    <spotless-plugin.version>2.30.0</spotless-plugin.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -132,12 +133,30 @@
         </executions>
       </plugin>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <version>${maven-pmd-plugin.version}</version>
+        <configuration>
+          <printFailingErrors>true</printFailingErrors>
+          <linkXRef>false</linkXRef>
+        </configuration>
+        <executions>
+          <execution>
+            <id>pmd-scan</id>
+            <goals>
+              <goal>check</goal>
+            </goals>
+            <phase>process-classes</phase>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>com.github.spotbugs</groupId>
         <artifactId>spotbugs-maven-plugin</artifactId>
         <version>${spotbugs-maven-plugin.version}</version>
         <executions>
           <execution>
-            <id>spotbugs-check</id>
+            <id>spotbugs-scan</id>
             <goals>
               <goal>check</goal>
             </goals>
@@ -203,7 +222,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>${compiler-plugin.version}</version>
+        <version>${maven-compiler-plugin.version}</version>
         <configuration>
           <compilerArgs>
             <arg>-parameters</arg>
@@ -213,7 +232,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>${surefire-plugin.version}</version>
+        <version>${maven-surefire-plugin.version}</version>
         <configuration>
           <systemPropertyVariables>
             <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
@@ -223,7 +242,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <version>${surefire-plugin.version}</version>
+        <version>${maven-surefire-plugin.version}</version>
         <executions>
           <execution>
             <goals>
