@@ -14,7 +14,7 @@ jobs:
         with:
           java-version: 17
           java-distribution: temurin
-          maven-version: 3.8.7
+          maven-version: 3.9.0
 
       - name: Setup GraalVM
         uses: graalvm/setup-graalvm@v1
