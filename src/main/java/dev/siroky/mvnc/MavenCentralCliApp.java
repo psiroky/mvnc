@@ -11,12 +11,12 @@ import picocli.CommandLine;
 public class MavenCentralCliApp implements QuarkusApplication {
 
     private CommandLine.IFactory factory;
-    private ListArtifactsCommand listArtifactsCommand;
+    private MvncCommand mvncCommand;
 
     @Inject
-    public MavenCentralCliApp(CommandLine.IFactory factory, ListArtifactsCommand listArtifactsCommand) {
+    public MavenCentralCliApp(CommandLine.IFactory factory, MvncCommand mvncCommand) {
         this.factory = factory;
-        this.listArtifactsCommand = listArtifactsCommand;
+        this.mvncCommand = mvncCommand;
     }
 
     public static void main(String... args) {
@@ -25,7 +25,7 @@ public class MavenCentralCliApp implements QuarkusApplication {
 
     @Override
     public int run(String... args) {
-        return new CommandLine(listArtifactsCommand, factory)
+        return new CommandLine(mvncCommand, factory)
                 .setExecutionExceptionHandler(new PrintExceptionMessageHandler())
                 .execute(args);
     }

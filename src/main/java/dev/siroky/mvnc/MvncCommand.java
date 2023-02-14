@@ -18,7 +18,7 @@ import picocli.CommandLine;
         mixinStandardHelpOptions = true,
         versionProvider = PicocliVersionProvider.class,
         description = "Search Maven Central based on groupId and artifactId")
-public class ListArtifactsCommand implements Runnable {
+public class MvncCommand implements Runnable {
     private static final String COORDINATE_DELIMITER = ":";
     private static final DateTimeFormatter DATE_FORMATTER =
             DateTimeFormatter.ofPattern("dd-MMM-yyyy").withZone(ZoneId.systemDefault());
@@ -37,7 +37,7 @@ public class ListArtifactsCommand implements Runnable {
     private final MavenCentralSearchRestClient mavenCentralSearchClient;
     private final MavenCentralRestClient mavenCentralClient;
 
-    public ListArtifactsCommand(
+    public MvncCommand(
             @RestClient MavenCentralSearchRestClient mavenCentralSearchClient,
             MavenCentralRestClient mavenCentralClient) {
         this.mavenCentralSearchClient = mavenCentralSearchClient;
