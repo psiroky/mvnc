@@ -8,6 +8,7 @@ import java.util.List;
 import dev.siroky.mvnc.rest.Artifact;
 import dev.siroky.mvnc.rest.ArtifactSearchResponse;
 import dev.siroky.mvnc.rest.MavenCentralRestClient;
+import dev.siroky.mvnc.rest.MavenCentralSearchRestClient;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import picocli.CommandLine;
 
@@ -33,32 +34,54 @@ public class ListArtifactsCommand implements Runnable {
             description = "Maven artifact coordinates, e.g. org.apache.maven:maven-core or just maven-core")
     String artifactCoordinates;
 
+    private final MavenCentralSearchRestClient mavenCentralSearchClient;
     private final MavenCentralRestClient mavenCentralClient;
 
-    public ListArtifactsCommand(@RestClient MavenCentralRestClient mavenCentralClient) {
+    public ListArtifactsCommand(
+            @RestClient MavenCentralSearchRestClient mavenCentralSearchClient,
+            MavenCentralRestClient mavenCentralClient) {
+        this.mavenCentralSearchClient = mavenCentralSearchClient;
         this.mavenCentralClient = mavenCentralClient;
     }
 
     @Override
     public void run() {
         if (artifactCoordinates.contains(COORDINATE_DELIMITER)) {
-            runWithGroupIdAndArtifactId(artifactCoordinates);
+            String[] parts = artifactCoordinates.split(COORDINATE_DELIMITER);
+            if (parts.length == 2) {
+                runWithGroupIdAndArtifactId(parts[0], parts[1]);
+            } else if (parts.length == 3) {
+                runWithGroupIdArtifactIdAndVersion(parts[0], parts[1], parts[2]);
+            } else {
+                throw new InvalidArtifactCoordinatesException(artifactCoordinates);
+            }
         } else {
             runWithArtifactId(artifactCoordinates);
         }
     }
 
-    private void runWithGroupIdAndArtifactId(String artifactCoordinates) {
-        String[] parts = artifactCoordinates.split(COORDINATE_DELIMITER);
-        if (parts.length != 2) {
-            throw new IllegalArgumentException("Invalid artifact coordinates '" + artifactCoordinates + "'");
+    private void runWithGroupIdAndArtifactId(String groupId, String artifactId) {
+        var sanitizedGroupId = sanitizeCoordinate(groupId);
+        var sanitizedArtifactId = sanitizeCoordinate(artifactId);
+        if (sanitizedGroupId.isBlank() || sanitizedArtifactId.isBlank()) {
+            throw new InvalidArtifactCoordinatesException(groupId, artifactId);
         }
-        var groupId = sanitizeCoordinate(parts[0]);
-        var artifactId = sanitizeCoordinate(parts[1]);
-        if (artifactId.isBlank() || groupId.isBlank()) {
-            throw new InvalidArtifactCoordinatesException(artifactCoordinates);
+        searchByGroupIdAndArtifactId(sanitizedGroupId, sanitizedArtifactId);
+    }
+
+    private void runWithGroupIdArtifactIdAndVersion(String groupId, String artifactId, String version) {
+        var sanitizedGroupId = sanitizeCoordinate(groupId);
+        var sanitizedArtifactId = sanitizeCoordinate(artifactId);
+        var sanitizedVersion = sanitizeCoordinate(version);
+        if (sanitizedGroupId.isBlank() || sanitizedArtifactId.isBlank() || sanitizedVersion.isBlank()) {
+            throw new InvalidArtifactCoordinatesException(groupId, artifactId, version);
         }
-        searchByGroupIdAndArtifactId(groupId, artifactId);
+        fetchPomContent(groupId, artifactId, version);
+    }
+
+    private void fetchPomContent(String groupId, String artifactId, String version) {
+        var pomContent = mavenCentralClient.fetchPom(groupId, artifactId, version);
+        System.out.println(pomContent);
     }
 
     private void runWithArtifactId(String artifactId) {
@@ -71,7 +94,7 @@ public class ListArtifactsCommand implements Runnable {
 
     private void searchByArtifactId(String artifactId) {
         var searchTerm = "a:" + artifactId;
-        ArtifactSearchResponse searchResponse = mavenCentralClient.searchByTerm(searchTerm, limit);
+        ArtifactSearchResponse searchResponse = mavenCentralSearchClient.searchByTerm(searchTerm, limit);
         printArtifactTable(searchResponse.artifacts());
     }
 
@@ -83,8 +106,8 @@ public class ListArtifactsCommand implements Runnable {
             } else {
                 sanitized = coordinate.substring(1);
             }
-            System.err.println(String.format(
-                    "Artifact coordinate cannot start with '*', using '%s' instead of '%s'.", sanitized, coordinate));
+            System.err.printf(
+                    "Artifact coordinate cannot start with '*', using '%s' instead of '%s'.%n", sanitized, coordinate);
             return sanitized;
         } else {
             return coordinate;
@@ -93,7 +116,7 @@ public class ListArtifactsCommand implements Runnable {
 
     private void searchByGroupIdAndArtifactId(String groupId, String artifactId) {
         var searchTerm = "g:" + groupId + " AND " + "a:" + artifactId;
-        ArtifactSearchResponse searchResponse = mavenCentralClient.searchByTerm(searchTerm, limit);
+        ArtifactSearchResponse searchResponse = mavenCentralSearchClient.searchByTerm(searchTerm, limit);
         printArtifactTable(searchResponse.artifacts());
     }
 

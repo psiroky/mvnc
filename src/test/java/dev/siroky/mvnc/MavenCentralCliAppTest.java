@@ -200,6 +200,36 @@ class MavenCentralCliAppTest {
     }
 
     @Test
+    void printPomContent(QuarkusMainLauncher launcher) {
+        var response = loadClassPathResource("/quarkus-arc-2.16.1.Final.pom");
+
+        mockServerClient
+                .when(request()
+                        .withMethod("GET")
+                        .withPath("/io/quarkus/quarkus-arc/2.16.1.Final/quarkus-arc-2.16.1.Final.pom"))
+                .respond(httpRequest -> response()
+                        .withStatusCode(200)
+                        .withHeader("Content-Type", "text/xml")
+                        .withBody(response));
+
+        LaunchResult result = launcher.launch("io.quarkus:quarkus-arc:2.16.1.Final");
+
+        assertThat(result.exitCode()).isZero();
+        assertThat(result.getOutput()).containsOnlyOnce("<artifactId>quarkus-arc</artifactId>");
+        assertThat(result.getOutput()).containsOnlyOnce("<version>2.16.1.Final</version>");
+        assertThat(result.getErrorOutput()).isEmpty();
+    }
+
+    @Test
+    void printPomContent_notFound(QuarkusMainLauncher launcher) {
+        LaunchResult result = launcher.launch("org.non.existing:non-existing:1.0.0");
+
+        assertThat(result.exitCode()).isNotZero();
+        assertThat(result.getOutput()).isEmpty();
+        assertThat(result.getErrorOutput()).contains("POM for 'org.non.existing:non-existing:1.0.0' not found");
+    }
+
+    @Test
     void showVersionShortOption(QuarkusMainLauncher launcher) {
         LaunchResult result = launcher.launch("-V");
 
@@ -250,7 +280,9 @@ class MavenCentralCliAppTest {
     public static class TestProfile implements QuarkusTestProfile {
         @Override
         public Map<String, String> getConfigOverrides() {
-            return Map.of("quarkus.rest-client.maven-central-search.url", "http://localhost:" + PORT);
+            return Map.of(
+                    "quarkus.rest-client.maven-central-search.url", "http://localhost:" + PORT,
+                    "maven-central.url", "http://localhost:" + PORT);
         }
     }
 }
