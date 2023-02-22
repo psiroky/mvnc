@@ -10,8 +10,8 @@ import picocli.CommandLine;
 @QuarkusMain
 public class MavenCentralCliApp implements QuarkusApplication {
 
-    private CommandLine.IFactory factory;
-    private MvncCommand mvncCommand;
+    private final CommandLine.IFactory factory;
+    private final MvncCommand mvncCommand;
 
     @Inject
     public MavenCentralCliApp(CommandLine.IFactory factory, MvncCommand mvncCommand) {
