@@ -1,6 +1,5 @@
 package dev.siroky.mvnc;
 
-import javax.enterprise.inject.Default;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -9,6 +8,7 @@ import dev.siroky.mvnc.rest.Artifact;
 import dev.siroky.mvnc.rest.ArtifactSearchResponse;
 import dev.siroky.mvnc.rest.MavenCentralRestClient;
 import dev.siroky.mvnc.rest.MavenCentralSearchRestClient;
+import jakarta.enterprise.inject.Default;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import picocli.CommandLine;
 
